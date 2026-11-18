@@ -5,8 +5,8 @@
     <PackageId>Neolution.DotNet.Console</PackageId>
     <Company>Neolution AG</Company>
     <Description>Library for building .NET console applications with dependency injection, async command execution, flexible logging via NLog, and configuration support.</Description>
-    <PackageProjectUrl>https://github.com/neolution-ch/Neolution.DotNet.Console</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/neolution-ch/Neolution.DotNet.Console</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/collana-solutions/Neolution.DotNet.Console</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/collana-solutions/Neolution.DotNet.Console</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>dotnet;console;cli;dependency-injection;async;commands;logging;nlog;configuration;hosting;commandlineparser;dotnet-cli;hostbuilder;microsoft-extensions-hosting;command-line</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

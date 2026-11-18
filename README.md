@@ -1,7 +1,7 @@
 # Neolution.DotNet.Console
 
 [![NuGet](https://img.shields.io/nuget/v/Neolution.DotNet.Console.svg)](https://www.nuget.org/packages/Neolution.DotNet.Console)
-[![Build Status](https://github.com/neolution-ch/Neolution.DotNet.Console/actions/workflows/cd-production.yml/badge.svg)](https://github.com/neolution-ch/Neolution.DotNet.Console/actions)
+[![Build Status](https://github.com/collana-solutions/Neolution.DotNet.Console/actions/workflows/cd-production.yml/badge.svg)](https://github.com/collana-solutions/Neolution.DotNet.Console/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 Neolution.DotNet.Console is a library for building .NET console applications. It uses the Microsoft.Extensions.Hosting model to provide a familiar setup for dependency injection, logging, and command-line parsing.
