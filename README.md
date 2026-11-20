@@ -1,274 +1,70 @@
-# Neolution.DotNet.Console
+# Csag.DotNet.Console
 
-[![NuGet](https://img.shields.io/nuget/v/Neolution.DotNet.Console.svg)](https://www.nuget.org/packages/Neolution.DotNet.Console)
-[![Build Status](https://github.com/collana-solutions/Neolution.DotNet.Console/actions/workflows/cd-production.yml/badge.svg)](https://github.com/collana-solutions/Neolution.DotNet.Console/actions)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Build Status](https://github.com/collana-solutions/Csag.DotNet.Console/actions/workflows/ci.yml/badge.svg)](https://github.com/collana-solutions/Csag.DotNet.Console/actions)
+[![NuGet](https://img.shields.io/nuget/v/Csag.DotNet.Console.svg)](https://www.nuget.org/packages/Csag.DotNet.Console)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
-Neolution.DotNet.Console is a library for building .NET console applications. It uses the Microsoft.Extensions.Hosting model to provide a familiar setup for dependency injection, logging, and command-line parsing.
+A library for building .NET console applications on the Microsoft.Extensions.Hosting model: async commands with cancellation, dependency injection like in ASP.NET Core, command-line parsing with verbs, NLog logging, and configuration from appsettings.json, environment variables, user secrets and the command line.
 
-This project works for simple CLI tools as well as longer-running console services, and supports cancellation tokens, configuration from JSON, environment variables, or command-line arguments.
+Up to version 5.0.1 the package was published as `Neolution.DotNet.Console`. The [migration guide](./Csag.DotNet.Console/README.md#migrate-from-neolutiondotnetconsole-to-csagdotnetconsole) lists the steps to switch.
 
-## Features
+## Projects
 
-- Async commands with cancellation support
-- Dependency injection setup matching ASP.NET Core patterns
-- Command-line parsing with verb and option support
-- Logging integration using NLog
-- Configuration from appsettings.json, environment variables, user secrets, and command line
-- Strict verb matching to prevent unintended command execution
-- A built-in `check-deps` command to verify all services are registered correctly
-- Support for multiple environments (Development, Production, etc.)
-- Automatic scope creation for each command execution to support scoped services
+| Project | Description |
+|---|---|
+| [`Csag.DotNet.Console`](./Csag.DotNet.Console) | The library, published as the [Csag.DotNet.Console](https://www.nuget.org/packages/Csag.DotNet.Console) NuGet package for `net6.0` and `net8.0`. Its [README](./Csag.DotNet.Console/README.md) is the package documentation, and its [CHANGELOG](./Csag.DotNet.Console/CHANGELOG.md) is generated from changesets. |
+| [`Csag.DotNet.Console.Demo`](./Csag.DotNet.Console.Demo) | A console application that shows the setup with a `Startup` class, a few commands and the NLog configuration. |
+| [`Csag.DotNet.Console.UnitTests`](./Csag.DotNet.Console.UnitTests) | xunit tests for the library. |
 
 ## Installation
 
-Install the package via NuGet:
-
-### .NET CLI
-
-```sh
-dotnet add package Neolution.DotNet.Console
+```shell
+dotnet add package Csag.DotNet.Console
 ```
 
-### Package Manager
+The [package README](./Csag.DotNet.Console/README.md) explains how to set up `Program.cs`, define commands and validate the service registrations with `check-deps`.
 
-```powershell
-Install-Package Neolution.DotNet.Console
+## Preview packages
+
+Each pull request to `main` or to a `release/**` branch publishes the package to a public preview feed on feedz.io. A draft PR, a PR from a fork and a PR from Dependabot publish no preview. The version is one patch above the current release, for example `6.0.1-pr.42.183` (PR 42, workflow run 183). The **"chore: version packages"** PR publishes a release candidate of the upcoming version, for example `6.1.0-pr.73.190`. Thus you can test all the changes of the next release before the release. In prerelease mode the version in `package.json` is a prerelease such as `7.0.0-rc.0`. Then the preview extends it, for example `7.0.0-rc.0.pr.42.183`. That version sorts after the prerelease and before the next one. A comment on the PR gives the version of its latest push. The feed removes previews after 30 days. Releases go to nuget.org only.
+
+To use a preview in an application, add the feed to the `nuget.config` of the application. The feed needs no credentials:
+
+```xml
+<packageSources>
+  <clear />
+  <add key="nuget.org" value="https://api.nuget.org/v3/index.json" />
+  <add key="csag-dotnet-console-previews" value="https://f.feedz.io/collana-solutions/csag-dotnet-console/nuget/index.json" />
+</packageSources>
+<packageSourceMapping>
+  <packageSource key="nuget.org">
+    <package pattern="*" />
+    <package pattern="Csag.DotNet.Console" />
+  </packageSource>
+  <packageSource key="csag-dotnet-console-previews">
+    <package pattern="Csag.DotNet.Console" />
+  </packageSource>
+</packageSourceMapping>
 ```
 
-## Getting Started
+The `Csag.DotNet.Console` pattern is also necessary under nuget.org. NuGet looks for a package only in the sources of its most specific pattern, so the `*` pattern does not apply to `Csag.DotNet.Console`. If nuget.org does not have the `Csag.DotNet.Console` pattern, the released versions do not restore.
 
-To help you kickstart your console application, we've provided a [demo application](/Neolution.DotNet.Console.Demo/Program.cs) that demonstrates the basic usage of this package.
+To test a preview:
 
-### Example Main Method with Startup Class (Recommended)
+1. Set `Csag.DotNet.Console` to the preview version.
+2. If the application restores in locked mode, update its `packages.lock.json` files.
+3. Add the feed only on the branch that tests the preview. The main branch of the application then does not need feedz.io to restore.
 
-Below is the recommended pattern for your `Program.cs` entry point, using a `Startup` class for service registration and configuration:
+## Release process
 
-```csharp
-// Program.cs
-namespace Neolution.DotNet.Console.Demo
-{
-    public static class Program
-    {
-        public static async Task Main(string[] args)
-        {
-            try
-            {
-                var builder = DotNetConsole.CreateDefaultBuilder(args);
-                DotNetConsoleLogger.Initialize(builder.Configuration);
-                
-                var startup = new Startup(builder.Environment, builder.Configuration);
-                startup.ConfigureServices(builder.Services);
+This repository follows the [collana-solutions release playbook](https://github.com/collana-solutions/release-playbook) (Changesets, NuGet variant):
 
-                var console = builder.Build();
-                await console.RunAsync();
-            }
-            catch (Exception ex)
-            {
-                DotNetConsoleLogger.Log.Error(ex, "Stopped program because of an unexpected exception");
-                throw;
-            }
-            finally
-            {
-                // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
-                DotNetConsoleLogger.Shutdown();
-            }
-        }
-    }
-}
-```
+1. Every PR that changes the library needs a changeset: run `pnpm changeset`, choose the bump type and describe the change. CI blocks PRs without one (`pnpm changeset --empty` for changes that do not affect the package).
+2. On merge to `main`, the Release workflow maintains a **"chore: version packages"** PR that collects the pending changesets. `scripts/sync-versions.mjs` keeps the `<Version>` in the `.csproj` in step with `package.json`.
+3. Merging that PR creates the git tag and the GitHub Release. The **NuGet Publish** workflow then packs the package and pushes it to nuget.org through [trusted publishing](https://learn.microsoft.com/nuget/nuget-org/trusted-publishing), so no API key is stored in the repository. To publish an existing release again, for example after a failed push, run **NuGet Publish** from the Actions tab with the release tag.
 
-```csharp
-// Startup.cs
-namespace Neolution.DotNet.Console.Demo
-{
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Hosting;
+Dependabot PRs get their changesets generated automatically.
 
-    /// <summary>
-    /// The startup class, composition root for the application.
-    /// </summary>
-    internal class Startup
-    {
-        public Startup(IHostEnvironment environment, IConfiguration configuration)
-        {
-            this.Environment = environment;
-            this.Configuration = configuration;
-        }
+## License
 
-        public IHostEnvironment Environment { get; }
-        public IConfiguration Configuration { get; }
-
-        public void ConfigureServices(IServiceCollection services)
-        {
-            // Register your services here. This is the main place for service registrations.
-            // Example: services.AddHttpClient();
-
-            // You have full access to IHostEnvironment and IConfiguration here.
-            // Use 'this.Environment' to register services based on the environment (e.g., Development, Production).
-            // Use 'this.Configuration' to register/configure services based on configuration values.
-        }
-    }
-}
-```
-
-This pattern keeps your `Program.cs` clean and delegates service registration and configuration to a dedicated `Startup` class, similar to ASP.NET Core applications.
-
-## Usage
-
-### Defining a Command
-
-To add a command, implement the `IDotNetConsoleCommand<TOptions>` interface. For example:
-
-```csharp
-using CommandLine;
-using Neolution.DotNet.Console.Abstractions;
-
-[Verb("echo", HelpText = "Write a string into the console.")]
-public class EchoOptions
-{
-    [Value(0)]
-    public string? Message { get; set; }
-}
-
-public class EchoCommand : IDotNetConsoleCommand<EchoOptions>
-{
-    public async Task RunAsync(EchoOptions options, CancellationToken cancellationToken)
-    {
-        Console.WriteLine($"Echo: {options.Message}");
-        await Task.CompletedTask;
-    }
-}
-```
-
-The library will automatically discover and register all commands (classes implementing `IDotNetConsoleCommand<TOptions>`).
-
-### Running the Application
-
-Run your application and specify the command verb as an argument. The library uses [CommandLineParser](https://github.com/commandlineparser/commandline) verbs and options internally, so you can invoke your command like this:
-
-```sh
-dotnet run -- [verb] [options]
-```
-
-Replace `[verb]` with the name of your command (e.g., `echo`). Any additional options or parameters defined in your command will be parsed and passed automatically.
-
-## Dependency Validation with check-deps
-
-The framework includes a built-in `check-deps` command that validates your application's dependency injection setup without running any business logic. This is particularly useful for catching DI configuration issues early.
-
-### Why use check-deps?
-
-- **Early Detection**: Catch dependency injection issues during build/CI rather than at runtime
-- **Fast Feedback**: Validates your entire DI container setup in seconds without executing business logic
-- **Confidence**: Ensures all your services can be properly constructed by the DI container
-- **CI Integration**: Perfect for automated validation in your deployment pipeline
-
-The command validates:
-
-- All registered services can be instantiated
-- No circular dependencies exist
-- Service lifetimes are properly configured
-- All required dependencies are registered
-
-If validation fails, the command will exit with a non-zero code and provide detailed error information about what's missing or misconfigured.
-
-### Running check-deps locally
-
-```sh
-# Validate your DI setup
-dotnet run -- check-deps
-
-# Or if you have a published/built application
-myapp.exe check-deps
-```
-
-### Using check-deps in CI/CD
-
-The `check-deps` command is especially valuable in CI/CD pipelines to catch dependency injection issues before deployment:
-
-```yaml
-# Example GitHub Actions workflow
-name: CI
-on: [push, pull_request]
-
-jobs:
-  validate-dependencies:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.x'
-      - name: Restore dependencies
-        run: dotnet restore
-      - name: Build
-        run: dotnet build --no-restore
-      - name: Validate DI setup
-        run: dotnet run --project YourApp -- check-deps
-      - name: Run tests
-        run: dotnet test --no-build
-```
-
-## Migration Guides
-
-### Migrate from V3 to V5
-
-> ⚠️ *Note: V4 was intentionally skipped, there is no V4 release.*
-
-To support cancellation tokens, the `IDotNetConsoleCommand` interface had to be changed: The `RunAsync` method now requires also a `CancellationToken` as a parameter. This change is breaking, so you will need to update your commands to reflect this change.
-
-#### ConfigureAppConfiguration
-
-The [`ConfigureAppConfiguration`](Neolution.DotNet.Console/DotNetConsoleBuilder.cs:81) method is now part of the `DotNetConsoleBuilder` and can be called after the builder has been instantiated.
-
-```csharp
-var builder = DotNetConsole.CreateDefaultBuilder(args);
-builder.ConfigureAppConfiguration((context, config) =>
-{
-    config.AddGoogleSecrets(options => { /* configuration */ });
-});
-```
-
-### Migrate from V2 to V3
-
-In .NET 6 the hosting model for ASP.NET Core applications was changed, we adjusted to that to fulfill the primary goal of this package: to provide a seamless and intuitive user experience. This introduces breaking changes that are explained below.
-
-#### Removed `ICompositionRoot` interface and `UseCompositionRoot` extension method
-
-The builder returned from calling `DotNetConsole.CreateDefaultBuilder(args)` now has a `Services` property that can be used to register services. Like in ASP.NET, this can now be done directly in `Program.cs`.
-
-Refer to the example above for the preferred structure of your Main method.
-
-#### Async by default
-
-All commands are now async by default. Use the new `IDotNetConsoleCommand` interface instead of `IConsoleAppCommand` and `IAsyncConsoleAppCommand`.
-
-#### Service registration validation
-
-The service registrations are now validated when `app.Build()` is called. This means that the application will not start if not all services that are registered (even if not used during runtime) can be created by the DI container or when there are scope/lifetime issues with the services.
-
-#### Strict verb matching when default verb is defined
-
-If one verb is defined as default, but the verb passed as argument is not matching any of the available verbs, the builder will no longer build a console application and instead throw an exception. This is done to avoid running the default verb command if the user accidentally uses a verb that is not available or simply made a typo.
-
-E.g. if the app uses `start` as the default verb and the user intention is to start the command assigned to the verb `echo` but mistypes it as `eccho` or similar, the builder will fail with an exception. Previous versions would have run the `start` command, because it's defined as default verb, but it was not the intention.
-
-### Migrate from V1 to V2
-
-V2 **introduces breaking changes** from V1, primarily because it upgrades NLog to Version 5. For a detailed review of these changes, please refer to the [official NLog release notes](https://nlog-project.org/2021/08/25/nlog-5-0-preview1-ready.html).
-
-#### Removed `Logging` section in appsettings.json
-
-NLog decided to deprecate Microsoft's `Logging` section in the appsettings.json starting with V5. In accordance of that decision we've also transitioned to only using NLog rules for filtering logging output. Although these rules might be a bit more complex, they offer greater flexibility and control.
-
-To get acquainted with these rules and learn how to migrate your current configuration, check out the [NLog documentation on logging rules](https://github.com/NLog/NLog/wiki/Configuration-file#rules). There's also a guide on the [new finalMinLevel attribute](https://github.com/NLog/NLog/wiki/Logging-Rules-FinalMinLevel) that you might find helpful.
-
-#### Removed default logging targets
-
-- **AWS Logger:** The AWS Logger, previously used for logging to CloudWatch, has been removed due to decreased usage. If you still need it, don't worry, you can easily [download it separately](https://www.nuget.org/packages/AWS.Logger.NLog). The configuration remains the same.
-- **DatabaseTarget:** The DatabaseTarget is no longer part of the NLog NuGet package. If you use this target, you'll need to [download it separately](https://www.nuget.org/packages/NLog.Database) to ensure its continued functionality.
-
-There are additional targets that have been transitioned into separate packages. Please review [this list](https://nlog-project.org/2021/08/25/nlog-5-0-preview1-ready.html#nlog-targets-extracted-into-their-own-nuget-packages) to determine if any targets you use are affected.
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
