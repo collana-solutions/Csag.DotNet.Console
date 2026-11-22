@@ -1,5 +1,45 @@
 # @collana-solutions/csag-dotnet-console
 
+## 6.0.0
+
+### Major Changes
+
+- [#27](https://github.com/collana-solutions/Csag.DotNet.Console/pull/27) [`6be6297`](https://github.com/collana-solutions/Csag.DotNet.Console/commit/6be629730224468c0d597dcd9b265206aa147528) Thanks [@neotrow](https://github.com/neotrow)! - The package moves to a new ID and new namespaces. Apart from that, 6.0.0 brings the changes listed in the other entries of this release, which were not part of 5.0.1.
+  
+  **New package ID:**
+  
+  | Up to 5.0.1 | From 6.0.0 |
+  | --- | --- |
+  | `Neolution.DotNet.Console` | `Csag.DotNet.Console` |
+  
+  **To migrate:**
+  
+  1. Replace the `Neolution.DotNet.Console` package reference with `Csag.DotNet.Console`, at 6.0.0 or later.
+  2. Change the namespaces: `using Neolution.DotNet.Console;` becomes `using Csag.DotNet.Console;`, and the same for `.Abstractions`, `.Attributes` and `.Logging`.
+  3. In the NLog configuration, load the extensions from the new assembly name. The assembly is now `Csag.DotNet.Console`, so NLog cannot load `Neolution.DotNet.Console` any more: with `throwConfigExceptions` the logger setup fails, and without it `${NLNHelperLogLevel}` renders nothing.
+  
+     ```json
+     "NLog": {
+       "extensions": [
+         { "assembly": "Csag.DotNet.Console" }
+       ]
+     }
+     ```
+  
+  These names stay as they are, so the rest of an existing configuration keeps working: the `${NLNHelperLogLevel}` layout renderer, the `NLog` configuration section, the `DOTNET_` prefix for environment variables, the `check-deps` verb and the type names such as `DotNetConsole`, `DotNetConsoleLogger` and `IDotNetConsoleCommand<TOptions>`.
+  
+  The `Neolution.DotNet.Console` ID gets deprecated on nuget.org, with `Csag.DotNet.Console` as the alternate. Its existing versions stay available, but it gets no new releases.
+
+- [#25](https://github.com/collana-solutions/Csag.DotNet.Console/pull/25) [`a2a6317`](https://github.com/collana-solutions/Csag.DotNet.Console/commit/a2a6317e10f66989bb61d866a932bef00a5bf1d2) Thanks [@neoscie](https://github.com/neoscie)! - `DotNetConsoleException` no longer has the `[Serializable]` attribute and the protected serialization constructor. Formatter-based serialization is obsolete in .NET (`SYSLIB0051`). Only a subclass that calls that constructor, or code that serializes the exception with `BinaryFormatter`, has to change.
+
+### Minor Changes
+
+- [#25](https://github.com/collana-solutions/Csag.DotNet.Console/pull/25) [`a2a6317`](https://github.com/collana-solutions/Csag.DotNet.Console/commit/a2a6317e10f66989bb61d866a932bef00a5bf1d2) Thanks [@neoscie](https://github.com/neoscie)! - New static class `DotNetConsoleLogger` for the application's own logger. `Initialize(IConfiguration)` loads NLog from the `NLog` configuration section and falls back to a plain console logger if that fails, `Log` returns the logger, and `Shutdown()` flushes it before the application exits. The README shows it in `Program.cs`. `DotNetConsole` writes its "Operation was canceled by the user." message through this logger, so the message only appears after `Initialize` has been called.
+
+### Patch Changes
+
+- [#25](https://github.com/collana-solutions/Csag.DotNet.Console/pull/25) [`a2a6317`](https://github.com/collana-solutions/Csag.DotNet.Console/commit/a2a6317e10f66989bb61d866a932bef00a5bf1d2) Thanks [@neoscie](https://github.com/neoscie)! - Scrutor 6.1.0 (5.0.1 used 6.0.1). The minimum versions of the other dependencies stay as in 5.0.1.
+
 ## [5.0.1] - 2026-03-25
 
 ### Added

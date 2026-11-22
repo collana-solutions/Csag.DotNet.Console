@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
-    <Version>5.0.1</Version>
+    <Version>6.0.0</Version>
     <PackageId>Csag.DotNet.Console</PackageId>
     <Description>Library for building .NET console applications with dependency injection, async command execution, flexible logging via NLog, and configuration support.</Description>
     <PackageTags>dotnet;console;cli;dependency-injection;async;commands;logging;nlog;configuration;hosting;commandlineparser;dotnet-cli;hostbuilder;microsoft-extensions-hosting;command-line</PackageTags>
