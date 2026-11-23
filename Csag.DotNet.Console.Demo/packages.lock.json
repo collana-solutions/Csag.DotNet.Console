@@ -8,6 +8,16 @@
         "resolved": "2.9.1",
         "contentHash": "OE0sl1/sQ37bjVsPKKtwQlWDgqaxWgtme3xZz7JssWUzg5JpMIyHgCTY9MVMxOg48fJ1AgGT3tgdH5m/kQ5xhA=="
       },
+      "Csag.CodeAnalysis": {
+        "type": "Direct",
+        "requested": "[3.3.0, )",
+        "resolved": "3.3.0",
+        "contentHash": "RPBBsBSyOZ+fOkVaUwk8udYvxa4fTt4EA4Dab9DYYXlYbRZ6wWS2AvPAs36oqcxKgZ3GHzZGNc5ttCFsbirUvA==",
+        "dependencies": {
+          "SonarAnalyzer.CSharp": "9.32.0.97167",
+          "StyleCop.Analyzers.Unstable": "1.2.0.556"
+        }
+      },
       "Microsoft.Extensions.Http": {
         "type": "Direct",
         "requested": "[8.0.1, )",
@@ -20,16 +30,6 @@
           "Microsoft.Extensions.Logging": "8.0.1",
           "Microsoft.Extensions.Logging.Abstractions": "8.0.2",
           "Microsoft.Extensions.Options": "8.0.2"
-        }
-      },
-      "Neolution.CodeAnalysis": {
-        "type": "Direct",
-        "requested": "[3.3.0-beta.2, )",
-        "resolved": "3.3.0-beta.2",
-        "contentHash": "88mG4f4P16K4Ql3uTqeaoeXGJLNMReFh9z3ZKmKZ0bY4RTk4z4syjuF/TefouGM2hR+mcBSdWbAtsKT/+FowlA==",
-        "dependencies": {
-          "SonarAnalyzer.CSharp": "9.32.0.97167",
-          "StyleCop.Analyzers.Unstable": "1.2.0.556"
         }
       },
       "Microsoft.Extensions.Configuration": {
