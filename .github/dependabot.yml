@@ -25,8 +25,11 @@ updates:
     schedule:
       interval: "weekly"
     # Wait 14 days before updating, to minimize the risk of supply chain attacks.
+    # Our own packages publish only through trusted publishing, so they come without the wait.
     cooldown:
       default-days: 14
+      exclude:
+        - "Csag.*"
     ignore:
       # Major versions of the framework packages follow the .NET version the library targets.
       - dependency-name: "Microsoft.Extensions*"

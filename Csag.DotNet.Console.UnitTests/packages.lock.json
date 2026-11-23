@@ -14,6 +14,16 @@
         "resolved": "6.0.4",
         "contentHash": "Qa7Hg+wrOMDKpXVn2dw4Wlun490bIWsFW0fdNJQFJLZnbU27MCP0HJ2mPgS+3EQBQUb0zKlkwiQzP+j38Hc3Iw=="
       },
+      "Csag.CodeAnalysis.TestsRuleset": {
+        "type": "Direct",
+        "requested": "[3.3.0, )",
+        "resolved": "3.3.0",
+        "contentHash": "lSQ9byuOxV3DUDtcyEkZnt9URnk/R177MDUGoY//DR8IfbyE1WAXZ9Schq/Mdy79hWTC68uTiSjWP0lTri7BQA==",
+        "dependencies": {
+          "SonarAnalyzer.CSharp": "9.32.0.97167",
+          "StyleCop.Analyzers.Unstable": "1.2.0.556"
+        }
+      },
       "GitHubActionsTestLogger": {
         "type": "Direct",
         "requested": "[3.0.5, )",
@@ -28,16 +38,6 @@
         "dependencies": {
           "Microsoft.CodeCoverage": "17.14.1",
           "Microsoft.TestPlatform.TestHost": "17.14.1"
-        }
-      },
-      "Neolution.CodeAnalysis.TestsRuleset": {
-        "type": "Direct",
-        "requested": "[3.3.0-beta.2, )",
-        "resolved": "3.3.0-beta.2",
-        "contentHash": "GQXIkpfRlgKFZw+vsQM2wTqRVq10Sq/zcEniQgFGTNZqyBCzogBLzi8FabptRO38yblVPN7YS35IqQ3bJtfp1Q==",
-        "dependencies": {
-          "SonarAnalyzer.CSharp": "9.32.0.97167",
-          "StyleCop.Analyzers.Unstable": "1.2.0.556"
         }
       },
       "Objectivity.AutoFixture.XUnit2.AutoNSubstitute": {
